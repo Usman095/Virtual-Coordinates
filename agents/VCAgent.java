@@ -19,7 +19,7 @@ import yaes.virtualcoordinate.VCContext;
  * 
  * @author Saad Khan
  * 
- */
+ */  
 public class VCAgent extends ForwarderSensorAgent implements Serializable,
 		VCConstants {
 
