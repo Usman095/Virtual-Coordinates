@@ -16,7 +16,7 @@ import yaes.virtualcoordinate.VCContext;
 
 /**
  * Defines the agent for the virtual coordinate setup
- * 
+ *        
  * @author Saad Khan
  * 
  */  
