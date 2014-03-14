@@ -4,29 +4,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.jscience.mathematics.number.Float64;
-import org.jscience.mathematics.structure.Field;
-import org.jscience.mathematics.vector.Float64Matrix;
-
-import weka.core.matrix.Matrix;
 import yaes.framework.agent.ACLMessage;
-import yaes.framework.agent.ACLMessage.Performative;
-import yaes.framework.simulation.ISimulationCode;
 import yaes.sensornetwork.constSensorNetwork;
 import yaes.sensornetwork.agents.ForwarderSensorAgent;
 import yaes.sensornetwork.model.SensorNetworkMessageConstants;
-import yaes.sensornetwork.model.SensorNetworkWorld;
-import yaes.sensornetwork.model.SensorNode;
-import yaes.sensornetwork.model.constSensorNetworkWorld;
-import yaes.ui.text.TextUi;
 import yaes.virtualcoordinate.VCConstants;
 import yaes.virtualcoordinate.VCContext;
 import yaes.virtualcoordinate.VCSimulation;
-import yaes.virtualcoordinate.VCConstants.NetworkMode;
 /**
  * 
  * This class will do directional routing using the algorithm in the paper: 
