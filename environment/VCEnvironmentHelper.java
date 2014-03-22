@@ -13,7 +13,7 @@ import yaes.sensornetwork.Environment;
 public class VCEnvironmentHelper implements Serializable{
 	/**
 	 * 
-	 */
+	 */  
 	private static final long serialVersionUID = -8484536725849716492L;
 
 	public static Environment generateVCEnvironment() {
