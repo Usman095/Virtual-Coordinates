@@ -37,6 +37,7 @@ import agents.BaseStation;
 import agents.VCAgent;
 import agents.VCLocalTable;
 import agents.VCMessageHelper;
+import agents.VCMobileAgent;
 import environment.VCEnvironmentHelper;
 
 /**
@@ -294,6 +295,36 @@ public class VCContext extends AbstractContext implements VCConstants, Serializa
 			sensorWorld.addSensorNode(staticNode);
 			sensorWorld.getDirectory().addAgent(staticNodeAgent);
 		}
+		
+//TODO: Add the Mobile Agent
+		Location src = new Location(10, 10);
+		Location dest = new Location(100, 100);
+
+		final SensorNode mobileNode = new SensorNode();
+		mobileNode.setName("MobileNode");
+		mobileNode.setLocation(src);
+		final VCMobileAgent mobileNodeAgent = new VCMobileAgent(mobileNode.getName(), sensorWorld);
+		//The following properties maybe skipped as desired
+		mobileNodeAgent.setTransmissionRange(sip
+				.getParameterDouble(constSensorNetwork.SensorDeployment_TransmissionRange));
+		mobileNodeAgent.setSensorRange(sip
+				.getParameterDouble(constSensorNetwork.SensorDeployment_SensorRange));
+		RapaportCommunicationEnergyModel cem = new RapaportCommunicationEnergyModel(
+				RapaportCommunicationEnergyModel.PowerConsumptionScenario.HIGH_PATH_LOSS);
+		mobileNodeAgent.setEnergyParameters(cem, 100, 0, true);
+		mobileNodeAgent.setStartLocation(src);
+		mobileNodeAgent.setTerminalLocation(dest);
+		//adding mobile agent on the node 
+		mobileNode.setAgent(mobileNodeAgent);
+		//adding node properties to mobile agent
+		mobileNodeAgent.setNode(mobileNode);
+		//adding the node and its agent to the sensor world
+		sensorWorld.addSensorNode(mobileNode);
+		sensorWorld.getDirectory().addAgent(mobileNodeAgent);
+//TODO: This ends the implementation of mobile agent and its node
+		
+
+		
 		//distribution of the sensor nodes if SensorArrangement is not Benchmark
 		distributeSensorNodes(sip);
 		
