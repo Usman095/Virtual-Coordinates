@@ -8,7 +8,7 @@ import yaes.sensornetwork.Environment;
 /**
  * Defines the environment for the Virtual Coordinate Sensor Network
  * @author Saad Khan
- *
+ * 
  */
 public class VCEnvironmentHelper implements Serializable{
 	/**
