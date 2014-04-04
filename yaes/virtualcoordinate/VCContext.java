@@ -181,13 +181,13 @@ public class VCContext extends AbstractContext implements VCConstants, Serializa
 		
 		if(this.getNetworkMode() == NetworkMode.TCTP) {
 			BS = new BaseStation(sip, this);
-			final SensorNode Node = new SensorNode();
-			Node.setName("MobileTarget");
-			mobileTargetAgent = createSensorNodeAgent(sip, Node, false);
-			Node.setAgent(mobileTargetAgent);
-			sinkAgent.setNode(Node);
-			sensorWorld.addSensorNode(Node);
-			sensorWorld.getDirectory().addAgent(mobileTargetAgent);
+			//final SensorNode Node = new SensorNode();
+			//Node.setName("MobileTarget");
+			//mobileTargetAgent = createSensorNodeAgent(sip, Node, false);
+			//Node.setAgent(mobileTargetAgent);
+			//sinkAgent.setNode(Node);
+			//sensorWorld.addSensorNode(Node);
+			//sensorWorld.getDirectory().addAgent(mobileTargetAgent);
 		}
 
 		averageNeighborsCount /= allAgents.size();
@@ -355,6 +355,7 @@ public class VCContext extends AbstractContext implements VCConstants, Serializa
 		// now we need to call something to create the routes
 		TextUi.println("Calculating paths...");
 		VCMessageHelper.setShortestPathToAnchors(this);
+		System.out.println(((VCAgent)sensorWorld.getSensorNodes().get(1).getAgent()).getVcLocalTable());
 		
 	}
 
@@ -618,6 +619,10 @@ public class VCContext extends AbstractContext implements VCConstants, Serializa
 
 	public int getSinkMoveDelay() {
 		return sinkMoveDelay;
+	}
+	
+	public BaseStation getBaseStation() {
+		return BS;
 	}
 
 	public void setSinkMoveDelay(int sinkMoveDelay) {

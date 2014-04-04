@@ -8,6 +8,7 @@ import java.util.List;
 import yaes.framework.simulation.SimulationInput;
 import yaes.sensornetwork.agents.ForwarderSensorAgent;
 import yaes.sensornetwork.model.SensorNode;
+import yaes.ui.text.TextUi;
 import yaes.virtualcoordinate.VCContext;
 
 import Jama.Matrix;
@@ -25,7 +26,7 @@ public class BaseStation {
 	private double[] currentMobileTC = new double[2];
 	private double[] prevMobileTC = new double[2];
 	private double[] predictedMobileTC = new double[2];
-	private HashMap<VCAgent, double[]> TCofNetwork;
+	private HashMap<VCAgent, double[]> TCofNetwork = new HashMap<VCAgent, double[]>();
 	private Matrix P;
 	private Matrix A;
 	private Matrix V;
@@ -40,13 +41,12 @@ public class BaseStation {
 	}
 	
 	public HashMap<VCAgent, double[]> findTC(List<VCAgent> myAgents) {
-		
 		Matrix Psvd;
 		SingularValueDecomposition B = new SingularValueDecomposition(A);
 		V = B.getV().transpose();
 		Psvd = P.times(V);
 
-		for (int i  = 0; i < Psvd.getRowDimension(); i++) {
+		for (int i  = 0; i < myAgents.size(); i++) {
 			double thetaT = Math.atan( (Psvd.get(i, 2)) / (Psvd.get(i, 1)));
 			double rT = Math.sqrt(Math.pow(Psvd.get(i, 0), 2) + 
 								  Math.pow(Psvd.get(i, 1), 2) + 
@@ -55,7 +55,6 @@ public class BaseStation {
 			TCofNetwork.put(myAgents.get(i), axis);
 			
 		}
-		
 		return TCofNetwork;
 		
 		
@@ -105,9 +104,10 @@ public class BaseStation {
 		for (VCAgent anchor : anchorAgents) {
 			int j = 0;
 			int k = 0;
-			VCLocalTable table = anchor.getVcLocalTable();
 			for (VCAgent agent : myAgents) {
+				VCLocalTable table = agent.getVcLocalTable();
 				VCs[j][i] = table.getNumberOfHops(agent, anchor);
+				//System.out.println(VCs[j][i]);
 				j++;
 				if (agent.isAnchor()) {
 					AVCs[k][i] = table.getNumberOfHops(agent, anchor);
@@ -142,5 +142,11 @@ public class BaseStation {
 	private void setSampleTime(double time) {
 		sampleTime = time;
 	}
+	
+	public void setPrevTC() {
+		prevMobileTC[0] = currentMobileTC[0];
+		prevMobileTC[1] = currentMobileTC[1];
+	}
+	
 
 }

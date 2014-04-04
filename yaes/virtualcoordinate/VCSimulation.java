@@ -18,9 +18,12 @@ import yaes.sensornetwork.model.SensorNetworkWorld;
 import yaes.sensornetwork.model.SensorNode;
 import yaes.sensornetwork.model.constSensorNetworkWorld;
 import yaes.ui.text.TextUi;
+import agents.BaseStation;
 import agents.DirectionalVCForwarding;
 import agents.VCAgent;
+import agents.VCLocalTable;
 import agents.VCMessageHelper;
+import agents.VCMobileAgent;
 
 /**
  * 
@@ -146,10 +149,42 @@ public class VCSimulation implements Serializable, ISimulationCode, constSensorN
 
 	}
 
-
+	int count = 0;
 	private void runTCTP(VCContext context) {
 		// TODO Auto-generated method stub
+		BaseStation BS = context.getBaseStation();//get the basesatiton
+		//get mobileAgent from the world
+		SensorNode sn = context.getWorld().lookupSensorNodeByName("MobileNode");
+		TextUi.print(sn.toString());
+		//VCMobileAgent mobileAgent = (VCMobileAgent)sn.getAgent();
+		//mobileAgent.action();
 		
+		//get the VCs of mobile agent by averaging the VCs of neighbours
+		/*List<VCAgent> neighbours = ((VCAgent)mobileAgent).getNeighbors();
+		List<VCAgent> anchorAgents = VCMessageHelper.getAnchorAgents(
+				context.getWorld(), ForwarderSensorAgent.class);
+		double[] mobileVCs = new double[anchorAgents.size()];
+		int i = 0;
+		for (VCAgent anchor : anchorAgents) {
+			VCLocalTable table = anchor.getVcLocalTable();
+			double entry = 0;
+			for (VCAgent neighbour : neighbours) {
+				entry += table.getNumberOfHops(neighbour, anchor);
+			}
+			mobileVCs[i] = entry/neighbours.size();
+			i++;
+		}
+		
+		//give these mobileVCs to basestation to get TCs
+		BS.setMobileVC(mobileVCs, anchorAgents.size());
+		BS.sample();
+		if (count == 0)
+			BS.setPrevTC();
+		else
+			BS.predictTC();
+		
+		count++;
+		*/
 	}
 
 
