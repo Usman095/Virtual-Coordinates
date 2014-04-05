@@ -6,12 +6,13 @@ import yaes.framework.agent.ACLMessage;
 import yaes.sensornetwork.agents.AbstractSensorAgent;
 import yaes.sensornetwork.model.Perception;
 import yaes.sensornetwork.model.SensorNetworkWorld;
+import yaes.virtualcoordinate.VCContext;
 import yaes.world.physical.location.Location;
 import yaes.world.physical.path.PPMTraversal;
 import yaes.world.physical.path.PlannedPath;
 import yaes.world.physical.path.ProgrammedPathMovement;
 
-public class VCMobileAgent  extends AbstractSensorAgent implements Serializable{
+public class VCMobileAgent  extends VCAgent implements Serializable{
 	private PlannedPath plannedpath;
 	private PPMTraversal ppmtraversal;
 
@@ -21,8 +22,11 @@ public class VCMobileAgent  extends AbstractSensorAgent implements Serializable{
 	
 	private boolean enableTraversal = true;
 	
-	public VCMobileAgent(String name, SensorNetworkWorld sensorWorld) {
-		super(name, sensorWorld);
+	public VCMobileAgent(String name, VCContext context) {
+		super(name, context);
+		this.plannedpath = new PlannedPath();
+		this.startLocation = new Location(0, 0);
+		this.terminalLocation = new Location(0, 0);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -38,6 +42,8 @@ public class VCMobileAgent  extends AbstractSensorAgent implements Serializable{
 			this.node.setLocation(currentLoc);
 		}
 		else{ //plan the movement path
+			this.plannedpath = new PlannedPath();
+
 			plannedpath.addLocation(startLocation);
 			for(int i=0; i<10; i++){ //Adds list of locations along x-axis with 30.0 at fixed y-axis
 				plannedpath.addLocation(new Location(20+i, 30));

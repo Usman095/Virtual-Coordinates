@@ -1,5 +1,6 @@
 package yaes.virtualcoordinate;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import yaes.virtualcoordinate.VCConstants.SinkMobilityMode;
 import yaes.virtualcoordinate.VCConstants.SinkMoveNotificationType;
 import yaes.world.physical.location.Location;
 
-public class MobileSinkHelper {
+public class MobileSinkHelper implements Serializable{
 	
 	public static VCAgent lastBroadcastToEntireNetworkAgent;
 	public static VCAgent choosedNeighbor;

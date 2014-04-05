@@ -3,6 +3,7 @@ package util;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
+import java.io.Serializable;
 
 import yaes.sensornetwork.model.SensorNetworkWorld;
 import yaes.sensornetwork.model.SensorNode;
@@ -13,7 +14,7 @@ import yaes.ui.visualization.painters.PainterHelper;
 import yaes.world.physical.location.IMoving;
 import agents.VCAgent;
 
-public class PaintVCNode extends paintSensorNode {
+public class PaintVCNode extends paintSensorNode implements Serializable{
 
 	private static final long serialVersionUID = 3763301612027110720L;
 

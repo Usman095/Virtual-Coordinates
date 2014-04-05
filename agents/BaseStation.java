@@ -1,6 +1,7 @@
 package agents;
 
 import java.awt.Graphics2D;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,12 +11,11 @@ import yaes.sensornetwork.agents.ForwarderSensorAgent;
 import yaes.sensornetwork.model.SensorNode;
 import yaes.ui.text.TextUi;
 import yaes.virtualcoordinate.VCContext;
-
 import Jama.Matrix;
 import Jama.SingularValueDecomposition;
 
-public class BaseStation {
-	
+public class BaseStation implements Serializable{
+	private static final long serialVersionUID = 2281025495542464230L;
 	private double sampleTime;
 	private Graphics2D detectionEllipse;
 	private List<VCAgent> detectionSensors;

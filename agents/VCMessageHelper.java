@@ -200,7 +200,7 @@ public class VCMessageHelper implements Serializable, VCConstants {
 		List<VCAgent> anchorAgents = new ArrayList<VCAgent>();
 		for (int i = 0; i < agents.size(); i++) {
 			if ((agents.get(i)).isAnchor())
-				anchorAgents.add(agents.get(i));
+				anchorAgents.add((VCAgent) agents.get(i));
 		}
 		// TextUi.println("Anchors count: " + anchorAgents.size());
 		return anchorAgents;

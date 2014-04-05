@@ -303,7 +303,7 @@ public class VCContext extends AbstractContext implements VCConstants, Serializa
 		final SensorNode mobileNode = new SensorNode();
 		mobileNode.setName("MobileNode");
 		mobileNode.setLocation(src);
-		final VCMobileAgent mobileNodeAgent = new VCMobileAgent(mobileNode.getName(), sensorWorld);
+		final VCMobileAgent mobileNodeAgent = new VCMobileAgent(mobileNode.getName(), this);
 		//The following properties maybe skipped as desired
 		mobileNodeAgent.setTransmissionRange(sip
 				.getParameterDouble(constSensorNetwork.SensorDeployment_TransmissionRange));
