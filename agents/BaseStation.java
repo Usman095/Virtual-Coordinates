@@ -62,11 +62,13 @@ public class BaseStation implements Serializable{
 	
 	public void sample() {
 		Matrix Msvd;
-		Msvd = mobileVC.times(V);
-		double thetaT = Math.atan( (Msvd.get(1, 2)) / (Msvd.get(1, 1)));
-		double rT = Math.sqrt(Math.pow(Msvd.get(1, 0), 2) + 
-				  Math.pow(Msvd.get(1, 1), 2) + 
-				  Math.pow(Msvd.get(1, 2), 2) );
+		TextUi.println(mobileVC.getColumnDimension() + " " + V.getColumnDimension());
+		Msvd = mobileVC.transpose().times(V);
+		//TextUi.println(Msvd)
+		double thetaT = Math.atan( (Msvd.get(0, 2)) / (Msvd.get(0, 1)));
+		double rT = Math.sqrt(Math.pow(Msvd.get(0, 0), 2) + 
+				  Math.pow(Msvd.get(0, 1), 2) + 
+				  Math.pow(Msvd.get(0, 2), 2) );
 		currentMobileTC[0] = rT * Math.cos(thetaT);
 		currentMobileTC[1] = rT * Math.sin(thetaT);
 	}

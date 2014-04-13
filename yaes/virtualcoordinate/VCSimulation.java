@@ -13,6 +13,7 @@ import yaes.framework.simulation.SimulationOutput;
 import yaes.sensornetwork.constSensorNetwork;
 import yaes.sensornetwork.agents.AbstractSensorAgent;
 import yaes.sensornetwork.agents.ForwarderSensorAgent;
+import yaes.sensornetwork.agents.SensorRoutingHelper;
 import yaes.sensornetwork.model.SensorNetworkMessageConstants;
 import yaes.sensornetwork.model.SensorNetworkWorld;
 import yaes.sensornetwork.model.SensorNode;
@@ -154,24 +155,33 @@ public class VCSimulation implements Serializable, ISimulationCode, constSensorN
 		// TODO Auto-generated method stub
 		BaseStation BS = context.getBaseStation();//get the basesatiton
 		//get mobileAgent from the world
-		SensorNode sn = context.getWorld().lookupSensorNodeByName("MobileNode");
-		TextUi.print(sn.toString());
+		AbstractSensorAgent mobileagent = context.getWorld().lookupSensorNodeByName("MobileNode").getAgent();
+		//TextUi.print(sn.toString());
 		//VCMobileAgent mobileAgent = (VCMobileAgent)sn.getAgent();
 		//mobileAgent.action();
 		
 		//get the VCs of mobile agent by averaging the VCs of neighbours
-		/*List<VCAgent> neighbours = ((VCAgent)mobileAgent).getNeighbors();
+		//List<VCAgent> neighbours = ((VCAgent)mobileAgent).getNeighbors();
 		List<VCAgent> anchorAgents = VCMessageHelper.getAnchorAgents(
 				context.getWorld(), ForwarderSensorAgent.class);
+		List<VCAgent> myAgents = VCMessageHelper.getAllVCAgents(context.getWorld(), false);
+		List<VCAgent> nebors = new ArrayList<VCAgent>();
+		for (VCAgent agent : myAgents) {
+			if (SensorRoutingHelper.isConnected(mobileagent, agent)) {
+				nebors.add(agent);
+			}
+		}
+		
 		double[] mobileVCs = new double[anchorAgents.size()];
 		int i = 0;
 		for (VCAgent anchor : anchorAgents) {
-			VCLocalTable table = anchor.getVcLocalTable();
+			VCLocalTable table = context.getCorrectVCLocalTable();
 			double entry = 0;
-			for (VCAgent neighbour : neighbours) {
-				entry += table.getNumberOfHops(neighbour, anchor);
+			for (VCAgent nebor : nebors) {
+				//TextUi.println(table.getNumberOfHops(nebor, anchor));
+				entry += table.getNumberOfHops(nebor, anchor);
 			}
-			mobileVCs[i] = entry/neighbours.size();
+			mobileVCs[i] = entry/nebors.size();
 			i++;
 		}
 		
@@ -184,7 +194,7 @@ public class VCSimulation implements Serializable, ISimulationCode, constSensorN
 			BS.predictTC();
 		
 		count++;
-		*/
+		
 	}
 
 
