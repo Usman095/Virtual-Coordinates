@@ -62,8 +62,10 @@ public class BaseStation implements Serializable{
 	
 	public void sample() {
 		Matrix Msvd;
-		TextUi.println(mobileVC.getColumnDimension() + " " + V.getColumnDimension());
+		//TextUi.println(mobileVC.getColumnDimension() + " " + V.getColumnDimension());
 		Msvd = mobileVC.transpose().times(V);
+		double[][] temp = mobileVC.getArray();
+		TextUi.println("Node is at VC " + temp[0][0] +" " + temp[1][0] +" " + temp[2][0] +" " + temp[3][0]);
 		//TextUi.println(Msvd)
 		double thetaT = Math.atan( (Msvd.get(0, 2)) / (Msvd.get(0, 1)));
 		double rT = Math.sqrt(Math.pow(Msvd.get(0, 0), 2) + 
@@ -71,6 +73,7 @@ public class BaseStation implements Serializable{
 				  Math.pow(Msvd.get(0, 2), 2) );
 		currentMobileTC[0] = rT * Math.cos(thetaT);
 		currentMobileTC[1] = rT * Math.sin(thetaT);
+		TextUi.println("TCs of Node are "+currentMobileTC[0] + " " + currentMobileTC[1]);
 	}
 	
 	public void predictTC() {

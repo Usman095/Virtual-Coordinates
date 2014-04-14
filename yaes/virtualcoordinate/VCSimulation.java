@@ -127,7 +127,8 @@ public class VCSimulation implements Serializable, ISimulationCode, constSensorN
 
 		if(context.getNetworkMode().equals(NetworkMode.GREEDY_FORWARDING) || 
 				context.getNetworkMode().equals(NetworkMode.DVCR_TO_MOBILE_SINK) || 
-				context.getNetworkMode().equals(NetworkMode.DIRECTIONAL_VC)){
+				context.getNetworkMode().equals(NetworkMode.DIRECTIONAL_VC) ||
+				context.getNetworkMode().equals(NetworkMode.TCTP)) {
 			if(context.getSinkMobilityMode() == SinkMobilityMode.MOBILE) {
 				sinkMoveCounter++;
 				if(sinkMoveCounter % context.getSinkMoveDelay() == 0){
@@ -156,6 +157,7 @@ public class VCSimulation implements Serializable, ISimulationCode, constSensorN
 		BaseStation BS = context.getBaseStation();//get the basesatiton
 		//get mobileAgent from the world
 		AbstractSensorAgent mobileagent = context.getWorld().lookupSensorNodeByName("MobileNode").getAgent();
+		TextUi.println("Actual Location of the Node is " + mobileagent.getNode().getLocation().getX() +" "+ mobileagent.getNode().getLocation().getY());
 		//TextUi.print(sn.toString());
 		//VCMobileAgent mobileAgent = (VCMobileAgent)sn.getAgent();
 		//mobileAgent.action();
