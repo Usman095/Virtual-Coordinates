@@ -624,6 +624,10 @@ public class VCContext extends AbstractContext implements VCConstants, Serializa
 	public BaseStation getBaseStation() {
 		return BS;
 	}
+	
+	public Rectangle2D.Double getInterestRectangle() {
+		return overallInterestRectangle;
+	}
 
 	public void setSinkMoveDelay(int sinkMoveDelay) {
 		this.sinkMoveDelay = sinkMoveDelay;

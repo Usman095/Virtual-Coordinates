@@ -157,7 +157,7 @@ public class VCSimulation implements Serializable, ISimulationCode, constSensorN
 		BaseStation BS = context.getBaseStation();//get the basesatiton
 		//get mobileAgent from the world
 		AbstractSensorAgent mobileagent = context.getWorld().lookupSensorNodeByName("MobileNode").getAgent();
-		TextUi.println("Actual Location of the Node is " + mobileagent.getNode().getLocation().getX() +" "+ mobileagent.getNode().getLocation().getY());
+		TextUi.println("Physical Location of the Node: " + mobileagent.getNode().getLocation().getX() +", "+ mobileagent.getNode().getLocation().getY());
 		//TextUi.print(sn.toString());
 		//VCMobileAgent mobileAgent = (VCMobileAgent)sn.getAgent();
 		//mobileAgent.action();

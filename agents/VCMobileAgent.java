@@ -1,6 +1,7 @@
 package agents;
 
 import java.io.Serializable;
+import java.util.Random;
 
 import yaes.framework.agent.ACLMessage;
 import yaes.sensornetwork.agents.AbstractSensorAgent;
@@ -9,8 +10,10 @@ import yaes.sensornetwork.model.SensorNetworkWorld;
 import yaes.virtualcoordinate.VCContext;
 import yaes.world.physical.location.Location;
 import yaes.world.physical.path.PPMTraversal;
+import yaes.world.physical.path.PathGenerator;
 import yaes.world.physical.path.PlannedPath;
 import yaes.world.physical.path.ProgrammedPathMovement;
+import java.awt.geom.Rectangle2D;
 
 public class VCMobileAgent  extends VCAgent implements Serializable{
 	private PlannedPath plannedpath;
@@ -18,6 +21,8 @@ public class VCMobileAgent  extends VCAgent implements Serializable{
 
 	private Location startLocation;
 	private Location terminalLocation;
+	
+	//public VCContext context;
 
 	
 	private boolean enableTraversal = true;
@@ -27,6 +32,8 @@ public class VCMobileAgent  extends VCAgent implements Serializable{
 		this.plannedpath = new PlannedPath();
 		this.startLocation = new Location(0, 0);
 		this.terminalLocation = new Location(0, 0);
+		
+		//this.context = context;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -37,21 +44,25 @@ public class VCMobileAgent  extends VCAgent implements Serializable{
 
 	@Override
 	public void action(){
+		Rectangle2D rectangle = (Rectangle2D)this.getContext().getInterestRectangle();
 		if(!isEnableTraversal()){ //if the path is planned the find next movement location			
 			Location currentLoc = ppmtraversal.getLocation(this.getWorld().getTime() - 1.0);
 			this.node.setLocation(currentLoc);
 		}
 		else{ //plan the movement path
-			this.plannedpath = new PlannedPath();
+			//this.plannedpath = new PlannedPath();
+			this.plannedpath = PathGenerator.createRandomWaypointPathBySegments(new Random(),
+		            rectangle, (int)this.getWorld().getEndOfTheWorldTime());
+			this.startLocation = plannedpath.getSource();
 
-			plannedpath.addLocation(startLocation);
-			for(int i=0; i<10; i++){ //Adds list of locations along x-axis with 30.0 at fixed y-axis
-				plannedpath.addLocation(new Location(20+i, 30));
-			}
-			plannedpath.addLocation(terminalLocation);
+			//plannedpath.addLocation(startLocation);
+			//for(int i=0; i<10; i++){ //Adds list of locations along x-axis with 30.0 at fixed y-axis
+				//plannedpath.addLocation(new Location(20+i, 30));
+			//}
+			//plannedpath.addLocation(terminalLocation);
 			
-			plannedpath.setSource(startLocation);
-			plannedpath.setDestination(terminalLocation);
+			//plannedpath.setSource(startLocation);
+			//plannedpath.setDestination(terminalLocation);
 			
 			ProgrammedPathMovement ppm = new ProgrammedPathMovement();
 			ppm.addSetLocation(startLocation);
