@@ -29,9 +29,9 @@ public class VCMobileAgent  extends VCAgent implements Serializable{
 	
 	public VCMobileAgent(String name, VCContext context) {
 		super(name, context);
-		this.plannedpath = new PlannedPath();
-		this.startLocation = new Location(0, 0);
-		this.terminalLocation = new Location(0, 0);
+		//this.plannedpath = new PlannedPath();
+		//this.startLocation = new Location(0, 0);
+		//this.terminalLocation = new Location(0, 0);
 		
 		//this.context = context;
 		// TODO Auto-generated constructor stub

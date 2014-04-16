@@ -173,6 +173,7 @@ public class VCSimulation implements Serializable, ISimulationCode, constSensorN
 				nebors.add(agent);
 			}
 		}
+		TextUi.println(nebors.size());
 		
 		double[] mobileVCs = new double[anchorAgents.size()];
 		int i = 0;
@@ -190,12 +191,14 @@ public class VCSimulation implements Serializable, ISimulationCode, constSensorN
 		//give these mobileVCs to basestation to get TCs
 		BS.setMobileVC(mobileVCs, anchorAgents.size());
 		BS.sample();
-		if (count == 0)
+		if (count == 0) {
 			BS.setPrevTC();
+			count++;
+		}
 		else
 			BS.predictTC();
 		
-		count++;
+		//count++;
 		
 	}
 

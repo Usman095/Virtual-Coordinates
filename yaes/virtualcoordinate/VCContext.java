@@ -504,6 +504,11 @@ public class VCContext extends AbstractContext implements VCConstants, Serializa
 		// IPainter painterNode = new paintSensorNode(sensorWorld);
 		IPainter painterNode = new PaintVCNode(sensorWorld);
 		for (final SensorNode node : sensorWorld.getSensorNodes()) {
+			//if (node.getName().equals("MobileNode")) {
+				//visualizer.addObject(node, new paintMobileNode(15,
+					//	Color.black, Color.red));
+				//continue;
+			//}
 			visualizer.addObject(node, painterNode);
 		}
 		// add the painting of the sink node

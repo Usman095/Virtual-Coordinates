@@ -43,7 +43,8 @@ public class BaseStation implements Serializable{
 	public HashMap<VCAgent, double[]> findTC(List<VCAgent> myAgents) {
 		Matrix Psvd;
 		SingularValueDecomposition B = new SingularValueDecomposition(A);
-		V = B.getV().transpose();
+		//V = B.getV().transpose();
+		V = B.getV();
 		Psvd = P.times(V);
 
 		for (int i  = 0; i < myAgents.size(); i++) {
