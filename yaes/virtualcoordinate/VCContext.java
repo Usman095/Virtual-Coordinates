@@ -7,6 +7,7 @@ import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -181,6 +182,12 @@ public class VCContext extends AbstractContext implements VCConstants, Serializa
 		
 		if(this.getNetworkMode() == NetworkMode.TCTP) {
 			BS = new BaseStation(sip, this);
+			HashMap<VCAgent, double[]> hm = BS.getTCofNetwork();
+			List<VCAgent> myAgents = VCMessageHelper.getAllVCAgents(this.getWorld(), false);
+			for (VCAgent agent : myAgents) {
+				double[] loc = hm.get(agent);
+				agent.getNode().setLocation(new Location(loc[0], loc[1]));
+			}
 			//final SensorNode Node = new SensorNode();
 			//Node.setName("MobileTarget");
 			//mobileTargetAgent = createSensorNodeAgent(sip, Node, false);

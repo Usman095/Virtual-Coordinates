@@ -30,8 +30,10 @@ public class BaseStation implements Serializable{
 	private Matrix P;
 	private Matrix A;
 	private Matrix V;
+	private VCContext context;
 	
 	public BaseStation(SimulationInput sim, VCContext context) {
+		this.context = context;
 		setSampleTime(sim.getTimeResolution());
 		List<VCAgent> myAgents = VCMessageHelper.getAllVCAgents(context.getWorld(), false);
 		List<VCAgent> anchorAgents = VCMessageHelper.getAnchorAgents(
@@ -43,8 +45,25 @@ public class BaseStation implements Serializable{
 	public HashMap<VCAgent, double[]> findTC(List<VCAgent> myAgents) {
 		Matrix Psvd;
 		SingularValueDecomposition B = new SingularValueDecomposition(A);
-		//V = B.getV().transpose();
-		V = B.getV();
+		V = B.getV().transpose();
+		for (int y = 0; y < V.getRowDimension(); y++) {
+			V.set(0, y, -V.get(0, y));
+			V.set(2, y, -V.get(2, y));
+		}
+		for (int x = 0; x < V.getRowDimension(); x++) {
+			for (int y = 0; y < V.getColumnDimension(); y++) {
+				TextUi.print(Double.toString(V.get(x, y))+"  ");
+			}
+			TextUi.println("");
+		}
+		TextUi.println("");
+		for (int x = 0; x < A.getRowDimension(); x++) {
+			for (int y = 0; y < A.getColumnDimension(); y++) {
+				TextUi.print(Double.toString(A.get(x, y))+"  ");
+			}
+			TextUi.println("");
+		}
+		//V = B.getV();
 		Psvd = P.times(V);
 
 		for (int i  = 0; i < myAgents.size(); i++) {
@@ -106,12 +125,12 @@ public class BaseStation implements Serializable{
 		double[][] AVCs = new double[anchorAgents.size()][anchorAgents.size()];
 		
 		int i = 0;
-		
+		VCLocalTable table = context.getCorrectVCLocalTable();
 		for (VCAgent anchor : anchorAgents) {
 			int j = 0;
 			int k = 0;
 			for (VCAgent agent : myAgents) {
-				VCLocalTable table = agent.getVcLocalTable();
+				
 				VCs[j][i] = table.getNumberOfHops(agent, anchor);
 				//System.out.println(VCs[j][i]);
 				j++;
@@ -122,6 +141,12 @@ public class BaseStation implements Serializable{
 			}
 			i++;
 		}
+		//for (int l = 0; l < anchorAgents.size(); l++) {
+			//for (int m = 0; m < anchorAgents.size(); m++) {
+				//TextUi.print(Double.toString(AVCs[l][m])+"  ");
+			//}
+			//TextUi.println("");
+		//}
 
 		P = new Matrix(VCs);
 		A = new Matrix(AVCs);
@@ -152,6 +177,10 @@ public class BaseStation implements Serializable{
 	public void setPrevTC() {
 		prevMobileTC[0] = currentMobileTC[0];
 		prevMobileTC[1] = currentMobileTC[1];
+	}
+	
+	public HashMap<VCAgent, double[]> getTCofNetwork() {
+		return TCofNetwork;
 	}
 	
 
