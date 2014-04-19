@@ -184,10 +184,10 @@ public class VCContext extends AbstractContext implements VCConstants, Serializa
 			BS = new BaseStation(sip, this);
 			HashMap<VCAgent, double[]> hm = BS.getTCofNetwork();
 			List<VCAgent> myAgents = VCMessageHelper.getAllVCAgents(this.getWorld(), false);
-			for (VCAgent agent : myAgents) {
-				double[] loc = hm.get(agent);
-				agent.getNode().setLocation(new Location(loc[0], loc[1]));
-			}
+			//for (VCAgent agent : myAgents) {
+				//double[] loc = hm.get(agent);
+				//agent.getNode().setLocation(new Location(loc[0], loc[1]));
+			//}
 			//final SensorNode Node = new SensorNode();
 			//Node.setName("MobileTarget");
 			//mobileTargetAgent = createSensorNodeAgent(sip, Node, false);

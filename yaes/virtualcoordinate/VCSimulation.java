@@ -1,5 +1,6 @@
 package yaes.virtualcoordinate;
 
+import java.awt.geom.Ellipse2D;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -191,13 +192,15 @@ public class VCSimulation implements Serializable, ISimulationCode, constSensorN
 		//give these mobileVCs to basestation to get TCs
 		BS.setMobileVC(mobileVCs, anchorAgents.size());
 		BS.sample();
+		double[] predictedTC = new double[2];
 		if (count == 0) {
 			BS.setPrevTC();
 			count++;
 		}
 		else
-			BS.predictTC();
+			predictedTC = BS.predictTC();
 		
+		Ellipse2D.Double ellipse = BS.getEllipse(predictedTC[0], predictedTC[1], 10.0, 20.0, BS.getPredictedAngle());
 		//count++;
 		
 	}

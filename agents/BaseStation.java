@@ -1,6 +1,11 @@
 package agents;
 
+import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Ellipse2D.Double;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +31,8 @@ public class BaseStation implements Serializable{
 	private double[] currentMobileTC = new double[2];
 	private double[] prevMobileTC = new double[2];
 	private double[] predictedMobileTC = new double[2];
+	private double predictedVelocity = 0;
+	private double predictedAngle = 0;
 	private HashMap<VCAgent, double[]> TCofNetwork = new HashMap<VCAgent, double[]>();
 	private Matrix P;
 	private Matrix A;
@@ -50,19 +57,19 @@ public class BaseStation implements Serializable{
 			V.set(0, y, -V.get(0, y));
 			V.set(2, y, -V.get(2, y));
 		}
-		for (int x = 0; x < V.getRowDimension(); x++) {
-			for (int y = 0; y < V.getColumnDimension(); y++) {
-				TextUi.print(Double.toString(V.get(x, y))+"  ");
-			}
-			TextUi.println("");
-		}
-		TextUi.println("");
-		for (int x = 0; x < A.getRowDimension(); x++) {
-			for (int y = 0; y < A.getColumnDimension(); y++) {
-				TextUi.print(Double.toString(A.get(x, y))+"  ");
-			}
-			TextUi.println("");
-		}
+		//for (int x = 0; x < V.getRowDimension(); x++) {
+			//for (int y = 0; y < V.getColumnDimension(); y++) {
+				//TextUi.print(Double.toString(V.get(x, y))+"  ");
+			//}
+			//TextUi.println("");
+		//}
+		//TextUi.println("");
+		//for (int x = 0; x < A.getRowDimension(); x++) {
+			//for (int y = 0; y < A.getColumnDimension(); y++) {
+				//TextUi.print(Double.toString(A.get(x, y))+"  ");
+			//}
+			//TextUi.println("");
+		//}
 		//V = B.getV();
 		Psvd = P.times(V);
 
@@ -80,7 +87,7 @@ public class BaseStation implements Serializable{
 		
 	}
 	
-	public void sample() {
+	public double[] sample() {
 		Matrix Msvd;
 		//TextUi.println(mobileVC.getColumnDimension() + " " + V.getColumnDimension());
 		Msvd = mobileVC.transpose().times(V);
@@ -91,28 +98,39 @@ public class BaseStation implements Serializable{
 		double rT = Math.sqrt(Math.pow(Msvd.get(0, 0), 2) + 
 				  Math.pow(Msvd.get(0, 1), 2) + 
 				  Math.pow(Msvd.get(0, 2), 2) );
+		prevMobileTC[0] = currentMobileTC[0];
+		prevMobileTC[1] = currentMobileTC[1];
 		currentMobileTC[0] = rT * Math.cos(thetaT);
 		currentMobileTC[1] = rT * Math.sin(thetaT);
 		TextUi.println("TCs of Node are "+currentMobileTC[0] + " " + currentMobileTC[1]);
+		return currentMobileTC;
 	}
 	
-	public void predictTC() {
+	public double[] predictTC() {
 		
 		double temp = Math.sqrt(Math.pow((currentMobileTC[0] - prevMobileTC[0]), 2) +
 								Math.pow((currentMobileTC[1] - prevMobileTC[1]), 2));
-		double velocity = temp/sampleTime;
+		predictedVelocity = temp/sampleTime;
 		
-		double angle = Math.acos((currentMobileTC[0] - prevMobileTC[0])/temp);
+		predictedAngle = Math.acos((currentMobileTC[0] - prevMobileTC[0])/temp);
 		
-		predictedMobileTC[0] = currentMobileTC[0] + velocity * sampleTime * Math.cos(angle);
-		predictedMobileTC[1] = currentMobileTC[1] + velocity * sampleTime * Math.sin(angle);
+		predictedMobileTC[0] = currentMobileTC[0] + predictedVelocity * sampleTime * Math.cos(predictedAngle);
+		predictedMobileTC[1] = currentMobileTC[1] + predictedVelocity * sampleTime * Math.sin(predictedAngle);
 		
-		prevMobileTC[0] = currentMobileTC[0];
-		prevMobileTC[1] = currentMobileTC[1];
+		//prevMobileTC[0] = currentMobileTC[0];
+		//prevMobileTC[1] = currentMobileTC[1];
+		return predictedMobileTC;
 	}
 	
-	public void createEllipse(){
-		
+	public Ellipse2D.Double getEllipse(double x, double y, double width, double height, double rotation) {
+	    double newX = x - width / 2.0;
+	    double newY = y - height / 2.0;
+
+	    Ellipse2D.Double ellipse = new Ellipse2D.Double(newX, newY, width, height);
+	    Shape sh = AffineTransform.getRotateInstance(rotation + Math.PI)
+	    .createTransformedShape(ellipse);
+
+	    return (Ellipse2D.Double)sh;
 	}
 	
 	public void alertESernsors(){
@@ -164,6 +182,10 @@ public class BaseStation implements Serializable{
 	
 	public double[] getCurrentTC() {
 		return currentMobileTC;
+	}
+	
+	public double getPredictedAngle() {
+		return predictedAngle;
 	}
 	
 	public void setMobileVC(double[] VC, int anchorsize) {
