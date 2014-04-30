@@ -152,19 +152,59 @@ public class VCSimulation implements Serializable, ISimulationCode, constSensorN
 
 	}
 
-	int count = 0;
+	boolean firstTime = true;
+	public int errorcount = 0;
 	private void runTCTP(VCContext context) {
 		// TODO Auto-generated method stub
 		BaseStation BS = context.getBaseStation();//get the basesatiton
 		//get mobileAgent from the world
 		AbstractSensorAgent mobileagent = context.getWorld().lookupSensorNodeByName("MobileNode").getAgent();
 		TextUi.println("Physical Location of the Node: " + mobileagent.getNode().getLocation().getX() +", "+ mobileagent.getNode().getLocation().getY());
-		//TextUi.print(sn.toString());
-		//VCMobileAgent mobileAgent = (VCMobileAgent)sn.getAgent();
-		//mobileAgent.action();
+		findMobileVC(context, mobileagent);
+		BS.sample();
+		for (int i = 0; i < 4; i++) {
+			mobileagent.action();
+		}
+		findMobileVC(context, mobileagent);
+		BS.sample();
+		double[] predictedTC = new double[2];
+		predictedTC = BS.predictTC(5);
+		Ellipse2D.Double ellipse = BS.getEllipse(predictedTC[0], predictedTC[1], 10.0, 20.0, BS.getPredictedAngle());
+		for (int i = 0; i < 5+1; i++) {
+			mobileagent.action();
+			if (i >= 3){
+				double[] TC = new double[2];
+				findMobileVC(context, mobileagent);
+				TC = BS.sample();
+				if (ellipse.contains(TC[0], TC[1])) {
+					break;
+				}
+				else {
+					if (i == 5) {
+						errorcount++;
+					}
+				}
+			}
+		}
 		
-		//get the VCs of mobile agent by averaging the VCs of neighbours
-		//List<VCAgent> neighbours = ((VCAgent)mobileAgent).getNeighbors();
+		
+		
+		BS.sample();
+		//double[] predictedTC = new double[2];
+		if (firstTime) {
+			BS.setPrevTC();
+			firstTime = false;
+		}
+		else
+			predictedTC = BS.predictTC(5);
+		
+		//Ellipse2D.Double ellipse = BS.getEllipse(predictedTC[0], predictedTC[1], 10.0, 20.0, BS.getPredictedAngle());
+		//count++;
+		
+	}
+	
+	private void findMobileVC(VCContext context, AbstractSensorAgent mobileagent) {
+		
 		List<VCAgent> anchorAgents = VCMessageHelper.getAnchorAgents(
 				context.getWorld(), ForwarderSensorAgent.class);
 		List<VCAgent> myAgents = VCMessageHelper.getAllVCAgents(context.getWorld(), false);
@@ -174,7 +214,6 @@ public class VCSimulation implements Serializable, ISimulationCode, constSensorN
 				nebors.add(agent);
 			}
 		}
-		TextUi.println(nebors.size());
 		
 		double[] mobileVCs = new double[anchorAgents.size()];
 		int i = 0;
@@ -188,21 +227,9 @@ public class VCSimulation implements Serializable, ISimulationCode, constSensorN
 			mobileVCs[i] = entry/nebors.size();
 			i++;
 		}
-		
+		BaseStation BS = context.getBaseStation();
 		//give these mobileVCs to basestation to get TCs
 		BS.setMobileVC(mobileVCs, anchorAgents.size());
-		BS.sample();
-		double[] predictedTC = new double[2];
-		if (count == 0) {
-			BS.setPrevTC();
-			count++;
-		}
-		else
-			predictedTC = BS.predictTC();
-		
-		Ellipse2D.Double ellipse = BS.getEllipse(predictedTC[0], predictedTC[1], 10.0, 20.0, BS.getPredictedAngle());
-		//count++;
-		
 	}
 
 

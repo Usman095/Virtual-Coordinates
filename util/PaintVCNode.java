@@ -54,6 +54,7 @@ public class PaintVCNode extends paintSensorNode implements Serializable{
 				PainterHelper.paintShapeAtLocation(wl.getLocation(), ellipse, Color.black, Color.gray.brighter(), g, panel);
 				//PainterHelper.paintRectangleAtLocation(wl.getLocation(), 15,
 				//		Color.black, Color.gray, g, panel);
+				//((Graphics2D)ellipse).rotate(arg0, arg1, arg2)
 			}
 			else if (agent.getNode().getName().equals("MobileNode")){
 				Ellipse2D.Double ellipse = new Ellipse2D.Double(0,0,10,10);

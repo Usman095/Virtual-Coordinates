@@ -21,10 +21,11 @@ import Jama.SingularValueDecomposition;
 
 public class BaseStation implements Serializable{
 	private static final long serialVersionUID = 2281025495542464230L;
-	private double sampleTime;
+	private double sampleTime = 4.0;
+	private double timeWindow;
+	private double predictionTime;
 	private Graphics2D detectionEllipse;
 	private List<VCAgent> detectionSensors;
-	private double timeWindow;
 	private VCAgent mobileTarget;
 	private ArrayList<VCAgent> neighbourAgents;
 	private Matrix mobileVC;
@@ -78,7 +79,7 @@ public class BaseStation implements Serializable{
 			double rT = Math.sqrt(Math.pow(Psvd.get(i, 0), 2) + 
 								  Math.pow(Psvd.get(i, 1), 2) + 
 								  Math.pow(Psvd.get(i, 2), 2) );
-			double[] axis = {rT * Math.cos(thetaT), rT * Math.sin(thetaT)};
+			double[] axis = {rT * Math.cos(thetaT)*10, rT * Math.sin(thetaT)*10};
 			TCofNetwork.put(myAgents.get(i), axis);
 			
 		}
@@ -100,13 +101,13 @@ public class BaseStation implements Serializable{
 				  Math.pow(Msvd.get(0, 2), 2) );
 		prevMobileTC[0] = currentMobileTC[0];
 		prevMobileTC[1] = currentMobileTC[1];
-		currentMobileTC[0] = rT * Math.cos(thetaT);
-		currentMobileTC[1] = rT * Math.sin(thetaT);
+		currentMobileTC[0] = rT * Math.cos(thetaT)*10;
+		currentMobileTC[1] = rT * Math.sin(thetaT)*10;
 		TextUi.println("TCs of Node are "+currentMobileTC[0] + " " + currentMobileTC[1]);
 		return currentMobileTC;
 	}
 	
-	public double[] predictTC() {
+	public double[] predictTC(int predictionTime) {
 		
 		double temp = Math.sqrt(Math.pow((currentMobileTC[0] - prevMobileTC[0]), 2) +
 								Math.pow((currentMobileTC[1] - prevMobileTC[1]), 2));
@@ -114,20 +115,22 @@ public class BaseStation implements Serializable{
 		
 		predictedAngle = Math.acos((currentMobileTC[0] - prevMobileTC[0])/temp);
 		
-		predictedMobileTC[0] = currentMobileTC[0] + predictedVelocity * sampleTime * Math.cos(predictedAngle);
-		predictedMobileTC[1] = currentMobileTC[1] + predictedVelocity * sampleTime * Math.sin(predictedAngle);
+		predictedMobileTC[0] = currentMobileTC[0] + predictedVelocity * predictionTime * Math.cos(predictedAngle);
+		predictedMobileTC[1] = currentMobileTC[1] + predictedVelocity * predictionTime * Math.sin(predictedAngle);
 		
 		//prevMobileTC[0] = currentMobileTC[0];
 		//prevMobileTC[1] = currentMobileTC[1];
+		predictedMobileTC[0] = predictedMobileTC[0]*10;
+		predictedMobileTC[1] = predictedMobileTC[1]*10;
 		return predictedMobileTC;
 	}
 	
 	public Ellipse2D.Double getEllipse(double x, double y, double width, double height, double rotation) {
 	    double newX = x - width / 2.0;
-	    double newY = y - height / 2.0;
+	    double newY = y - height / 2.0;//
 
 	    Ellipse2D.Double ellipse = new Ellipse2D.Double(newX, newY, width, height);
-	    Shape sh = AffineTransform.getRotateInstance(rotation + Math.PI)
+	    Shape sh = AffineTransform.getRotateInstance(rotation + Math.PI/2.0)
 	    .createTransformedShape(ellipse);
 
 	    return (Ellipse2D.Double)sh;
@@ -171,6 +174,26 @@ public class BaseStation implements Serializable{
 	}
 	//at each time step multiple of sample time set the currentMobileTC value in update function
 	
+	public double[] quickSample(double[] VCs, int anchorsize) {
+		Matrix Msvd;
+		//TextUi.println(mobileVC.getColumnDimension() + " " + V.getColumnDimension());
+		Matrix VCm = new Matrix(VCs, anchorsize);
+		Msvd = VCm.transpose().times(V);
+		//double[][] temp = mobileVC.getArray();
+		//TextUi.println("Node is at VC " + temp[0][0] +" " + temp[1][0] +" " + temp[2][0] +" " + temp[3][0]);
+		//TextUi.println(Msvd)
+		double thetaT = Math.atan( (Msvd.get(0, 2)) / (Msvd.get(0, 1)));
+		double rT = Math.sqrt(Math.pow(Msvd.get(0, 0), 2) + 
+				  Math.pow(Msvd.get(0, 1), 2) + 
+				  Math.pow(Msvd.get(0, 2), 2) );
+		//prevMobileTC[0] = currentMobileTC[0];
+		//prevMobileTC[1] = currentMobileTC[1];
+		//currentMobileTC[0] = rT * Math.cos(thetaT);
+		//currentMobileTC[1] = rT * Math.sin(thetaT);
+		//TextUi.println("TCs of Node are "+currentMobileTC[0] + " " + currentMobileTC[1]);
+		double[] result = {rT * Math.cos(thetaT), rT * Math.sin(thetaT)};
+		return result;
+	}
 	
 	public double[] getPrevTC() {
 		return prevMobileTC;
@@ -205,5 +228,8 @@ public class BaseStation implements Serializable{
 		return TCofNetwork;
 	}
 	
+	public double getSampleTime() {
+		return sampleTime;
+	}
 
 }

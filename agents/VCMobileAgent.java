@@ -52,7 +52,7 @@ public class VCMobileAgent  extends VCAgent implements Serializable{
 		else{ //plan the movement path
 			//this.plannedpath = new PlannedPath();
 			this.plannedpath = PathGenerator.createRandomWaypointPathBySegments(new Random(),
-		            rectangle, (int)this.getWorld().getEndOfTheWorldTime());
+		            rectangle, (int)(this.getWorld().getEndOfTheWorldTime()*this.getContext().getBaseStation().getSampleTime()*20));
 			this.startLocation = plannedpath.getSource();
 
 			//plannedpath.addLocation(startLocation);
