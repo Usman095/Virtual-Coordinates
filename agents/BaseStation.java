@@ -6,6 +6,7 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Ellipse2D.Double;
+import java.awt.geom.Path2D;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,7 +94,7 @@ public class BaseStation implements Serializable{
 		//TextUi.println(mobileVC.getColumnDimension() + " " + V.getColumnDimension());
 		Msvd = mobileVC.transpose().times(V);
 		double[][] temp = mobileVC.getArray();
-		TextUi.println("Node is at VC " + temp[0][0] +" " + temp[1][0] +" " + temp[2][0] +" " + temp[3][0]);
+		//TextUi.println("Node is at VC " + temp[0][0] +" " + temp[1][0] +" " + temp[2][0] +" " + temp[3][0]);
 		//TextUi.println(Msvd)
 		double thetaT = Math.atan( (Msvd.get(0, 2)) / (Msvd.get(0, 1)));
 		double rT = Math.sqrt(Math.pow(Msvd.get(0, 0), 2) + 
@@ -103,7 +104,7 @@ public class BaseStation implements Serializable{
 		prevMobileTC[1] = currentMobileTC[1];
 		currentMobileTC[0] = rT * Math.cos(thetaT)*10;
 		currentMobileTC[1] = rT * Math.sin(thetaT)*10;
-		TextUi.println("TCs of Node are "+currentMobileTC[0] + " " + currentMobileTC[1]);
+		//TextUi.println("TCs of Node are "+currentMobileTC[0] + " " + currentMobileTC[1]);
 		return currentMobileTC;
 	}
 	
@@ -120,8 +121,8 @@ public class BaseStation implements Serializable{
 		
 		//prevMobileTC[0] = currentMobileTC[0];
 		//prevMobileTC[1] = currentMobileTC[1];
-		predictedMobileTC[0] = predictedMobileTC[0]*10;
-		predictedMobileTC[1] = predictedMobileTC[1]*10;
+		predictedMobileTC[0] = predictedMobileTC[0];
+		predictedMobileTC[1] = predictedMobileTC[1];
 		return predictedMobileTC;
 	}
 	
@@ -131,9 +132,9 @@ public class BaseStation implements Serializable{
 
 	    Ellipse2D.Double ellipse = new Ellipse2D.Double(newX, newY, width, height);
 	    Shape sh = AffineTransform.getRotateInstance(rotation + Math.PI/2.0)
-	    .createTransformedShape(ellipse);
+	    .createTransformedShape(new Ellipse2D.Double(newX, newY, width, height));
 
-	    return (Ellipse2D.Double)sh;
+	    return ellipse;
 	}
 	
 	public void alertESernsors(){

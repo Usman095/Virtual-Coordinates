@@ -1,6 +1,9 @@
 package yaes.virtualcoordinate;
 
+import java.awt.Point;
+import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +53,7 @@ public class VCSimulation implements Serializable, ISimulationCode, constSensorN
 		SensorNetworkWorld sensorWorld = context.getWorld();
 		sensorWorld.setTime((int) time);
 		for (SensorNode element : sensorWorld.getSensorNodes()) {
-			if (element.isEnabled()) {
+			if (element.isEnabled() && !element.getName().equals("MobileNode")) {
 				element.update();
 			}
 		}
@@ -156,47 +159,57 @@ public class VCSimulation implements Serializable, ISimulationCode, constSensorN
 	public int errorcount = 0;
 	private void runTCTP(VCContext context) {
 		// TODO Auto-generated method stub
+		int predt = 10;
 		BaseStation BS = context.getBaseStation();//get the basesatiton
 		//get mobileAgent from the world
 		AbstractSensorAgent mobileagent = context.getWorld().lookupSensorNodeByName("MobileNode").getAgent();
 		TextUi.println("Physical Location of the Node: " + mobileagent.getNode().getLocation().getX() +", "+ mobileagent.getNode().getLocation().getY());
 		findMobileVC(context, mobileagent);
+		//double[] actualTC = new double[2];
 		BS.sample();
+		//TextUi.println("Actual TC are: "+actualTC[0] + " " +actualTC[1]);
 		for (int i = 0; i < 4; i++) {
 			mobileagent.action();
 		}
 		findMobileVC(context, mobileagent);
 		BS.sample();
 		double[] predictedTC = new double[2];
-		predictedTC = BS.predictTC(5);
-		Ellipse2D.Double ellipse = BS.getEllipse(predictedTC[0], predictedTC[1], 10.0, 20.0, BS.getPredictedAngle());
-		for (int i = 0; i < 5+1; i++) {
+		predictedTC = BS.predictTC(predt);
+		Shape ellipse = BS.getEllipse(predictedTC[0]+10, predictedTC[1]-10, 50.0, 50.0, BS.getPredictedAngle());
+		if (ellipse.contains(predictedTC[0], predictedTC[1]))
+			TextUi.println("points are contained");
+		if(ellipse.equals(null))
+			TextUi.println("ellipse is null");
+		TextUi.println("ellipse at: "+predictedTC[0] + " " +predictedTC[1]);
+		for (int i = 0; i < predt+8; i++) {
 			mobileagent.action();
-			if (i >= 3){
+			if (i >= predt-1-8){
 				double[] TC = new double[2];
 				findMobileVC(context, mobileagent);
 				TC = BS.sample();
+				TextUi.println("Actual TC are: "+TC[0] + " " +TC[1]);
 				if (ellipse.contains(TC[0], TC[1])) {
 					break;
 				}
 				else {
-					if (i == 5) {
+					if (i == predt-1+8) {
 						errorcount++;
 					}
 				}
 			}
 		}
+		TextUi.println("error count is: "+errorcount);
 		
 		
 		
-		BS.sample();
+		//BS.sample();
 		//double[] predictedTC = new double[2];
-		if (firstTime) {
-			BS.setPrevTC();
-			firstTime = false;
-		}
-		else
-			predictedTC = BS.predictTC(5);
+		//if (firstTime) {
+			//BS.setPrevTC();
+			//firstTime = false;
+		//}
+		//else
+			//predictedTC = BS.predictTC(5);
 		
 		//Ellipse2D.Double ellipse = BS.getEllipse(predictedTC[0], predictedTC[1], 10.0, 20.0, BS.getPredictedAngle());
 		//count++;

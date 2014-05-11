@@ -225,7 +225,7 @@ public class VirtualCoordinateMain implements Serializable, VCConstants {
 	public static void doTCTPRun() throws InstantiationException,
 			IllegalAccessException, IOException {
 		final SimulationInput sip = createDefaultSimulationInput();
-		sip.setStopTime(1);
+		sip.setStopTime(1000);
 		sip.setParameter(NetworkMode.TCTP);
 		sip.setParameter(SinkMobilityMode.STATIC);
 		//sip.setParameter(CSUBenchmark.CONCAVEVOID2);

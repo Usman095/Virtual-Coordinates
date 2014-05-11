@@ -7,6 +7,7 @@ import yaes.framework.agent.ACLMessage;
 import yaes.sensornetwork.agents.AbstractSensorAgent;
 import yaes.sensornetwork.model.Perception;
 import yaes.sensornetwork.model.SensorNetworkWorld;
+import yaes.ui.text.TextUi;
 import yaes.virtualcoordinate.VCContext;
 import yaes.world.physical.location.Location;
 import yaes.world.physical.path.PPMTraversal;
@@ -41,18 +42,23 @@ public class VCMobileAgent  extends VCAgent implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 4206449109512536487L;
-
+	int time = 0;
 	@Override
 	public void action(){
 		Rectangle2D rectangle = (Rectangle2D)this.getContext().getInterestRectangle();
 		if(!isEnableTraversal()){ //if the path is planned the find next movement location			
-			Location currentLoc = ppmtraversal.getLocation(this.getWorld().getTime() - 1.0);
+			Location currentLoc = ppmtraversal.getLocation(time);
+			time++;
 			this.node.setLocation(currentLoc);
 		}
 		else{ //plan the movement path
+			//double time = this.getWorld().getEndOfTheWorldTime();
+			//TextUi.println("end time is: "+time);
 			//this.plannedpath = new PlannedPath();
+			//this.plannedpath = PathGenerator.createRandomWaypointPathBySegments(new Random(),
+		    //        rectangle, (int)(this.getWorld().getEndOfTheWorldTime()*this.getContext().getBaseStation().getSampleTime()*20));
 			this.plannedpath = PathGenerator.createRandomWaypointPathBySegments(new Random(),
-		            rectangle, (int)(this.getWorld().getEndOfTheWorldTime()*this.getContext().getBaseStation().getSampleTime()*20));
+		            rectangle, 1000);
 			this.startLocation = plannedpath.getSource();
 
 			//plannedpath.addLocation(startLocation);
